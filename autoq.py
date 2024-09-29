@@ -7,6 +7,7 @@ play_image = cv2.imread('play_image.png')
 second_image = cv2.imread('second_image.png')
 score_image = cv2.imread('score_image.png')
 button_image = cv2.imread('play_again.png')
+
 def detect_button(image, threshold=0.8):
     screenshot = pyautogui.screenshot()
     
@@ -15,9 +16,7 @@ def detect_button(image, threshold=0.8):
     
     result = cv2.matchTemplate(screen_rgb, image, cv2.TM_CCOEFF_NORMED)
     
-
     loc = np.where(result >= threshold)
-    
   
     for pt in zip(*loc[::-1]):
         return pt  
@@ -27,20 +26,22 @@ def detect_button(image, threshold=0.8):
 while True:
     play_image_position = detect_button(play_image)
     if play_image_position:
+        print('Status: Starting match     ', end="\r")
         pyautogui.click(play_image_position)
         time.sleep(1)  
+        print('Status: Match started      ', end="\r")  # Sobrescreve a linha anterior
     second_image_position = detect_button(second_image)
     if second_image_position:
         pyautogui.press('f10')
-        time.sleep(1) 
         pyautogui.press('n')
-        time.sleep(2)
+        print('Status: Quitting           ', end="\r")
     score_image_position = detect_button(score_image)
     if score_image_position:
         pyautogui.press('s')
         time.sleep(1)
+        print('Status: Opponent quit, Win!', end="\r")
     button_position = detect_button(button_image)
     if button_position:
         pyautogui.click(button_position)
-        time.sleep(1) 
-    time.sleep(0.5)
+        print('Status: Queueing!', end="\r")
+    time.sleep(1)
